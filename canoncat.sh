@@ -14,6 +14,13 @@ for arg in "$@"; do
 
 	realname="$(readlink -f "${path}")"
 	echo "${realname}"
-	# line numbers, close if one screen, don't wipe screen on quit, respond to interrupt
-	less -NFXK "${realname}" || exit $?
+	# line numbers, close if one screen, don't wipe screen on quit, respond to interrupt, use verbose prompt
+	less -NFXKM \
+		--line-num-width=4 \
+		--use-color \
+		-DNbk `# line number colors` \
+		-DPBkd `# prompt colors` \
+		-PM"%F | file %i/%m | line %lb/%L \: %Pb\%"$ `# prompt` \
+		"${realname}" || exit $?
+
 done;
