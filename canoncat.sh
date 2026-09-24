@@ -6,5 +6,12 @@ if [[ $# -eq 0 ]]; then
 fi
 
 for arg in "$@"; do
-	which "$arg" | xargs readlink -f | xargs -r0 bash -c 'echo $@; cat $@ -n | more' '';
+	path="$(command -v "${arg}")"; stat=$?
+	if [[ ${stat} -ne 0 ]]; then
+		echo Invalid path argument \'"${arg}"\' ; exit ${stat};
+	fi
+
+	realname="$(readlink -f "${path}")"
+	echo "${realname}"
+	less -NFXK "${realname}" || exit $?
 done;
